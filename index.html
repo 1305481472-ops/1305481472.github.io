@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>胸痛急救协同救治系统 · 原型演示</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="no-scroll">
+
+<!-- ================= 登录 ================= -->
+<div class="login" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-side">
+      <div class="ls-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h3.6l2-5 2.8 10 2.2-7 1.6 4H21"/>
+        </svg>
+      </div>
+      <h2>胸痛急救<br>协同救治系统</h2>
+      <p>院前 · 院中 · 院后一体化<br>患者信息随流程流转</p>
+      <ul class="ls-list">
+        <li>真实报告单影像上传</li>
+        <li>高危线索规则提示</li>
+        <li>交接单一键打印</li>
+      </ul>
+      <span class="ls-foot">演示原型 · 数据虚构</span>
+    </div>
+    <form class="login-form" id="loginForm" autocomplete="off" novalidate>
+      <div class="lf-brand-m">胸痛急救协同救治系统 <em>演示原型</em></div>
+      <div class="lf-head">
+        <p class="eyebrow">STAFF SIGN IN</p>
+        <h2>医护工作站登录</h2>
+        <p class="lf-sub">请使用医院工号与密码登录，操作将全程记录审计。</p>
+      </div>
+      <label class="lf-fld">
+        <span>工号</span>
+        <div class="lf-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.5 3.1-5.4 7-5.4s7 1.9 7 5.4"/></svg>
+          <input id="loginId" type="text" inputmode="text" placeholder="如 ER1001" autocomplete="username">
+        </div>
+      </label>
+      <label class="lf-fld">
+        <span>密码</span>
+        <div class="lf-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.4"/><path d="M8.4 10.4V7.6a3.6 3.6 0 0 1 7.2 0v2.8"/></svg>
+          <input id="loginPwd" type="password" placeholder="请输入密码" autocomplete="current-password">
+          <button class="lf-eye" type="button" id="loginEye" aria-label="显示密码">显示</button>
+        </div>
+      </label>
+      <div class="lf-row">
+        <label class="lf-chk"><input type="checkbox" id="loginRemember" checked> 记住工号</label>
+        <span class="lf-link">忘记密码请联系信息科</span>
+      </div>
+      <p class="lf-err" id="loginErr" role="alert"></p>
+      <button class="btn btn-primary lf-submit" type="submit" id="loginBtn">登 录</button>
+      <div class="lf-demo">
+        <span>演示账号（点击自动填入）</span>
+        <div class="lf-demo-set">
+          <button type="button" data-demo="ER1001|123456">ER1001 · 急诊 李医生</button>
+          <button type="button" data-demo="CA2002|123456">CA2002 · 心内 王医生</button>
+          <button type="button" data-demo="IR3003|123456">IR3003 · 导管室 陈医生</button>
+        </div>
+      </div>
+      <p class="lf-tip">首次使用请由科室管理员开通工号；连续 5 次输错将锁定 10 分钟（演示不限制）。</p>
+    </form>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ================= 顶部 ================= -->
+  <header class="topbar">
+    <div class="topbar-main">
+      <p class="eyebrow">Chest Pain Emergency Network · 功能布局示意</p>
+      <div class="h1-row">
+        <h1>胸痛急救协同救治系统</h1>
+        <span class="badge-demo">模拟演示</span>
+      </div>
+      <p class="sub">院前、院中、院后三阶段协同。患者信息由医护人员逐项录入，系统自动比对参考区间并标记异常，所有结论需人工复核后生效。</p>
+    </div>
+    <div class="top-actions">
+      <button class="btn btn-primary btn-sm" id="newPatientBtn" type="button" data-act="new-patient">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5.5v13M5.5 12h13"/></svg>
+        新建病历
+      </button>
+      <button class="chip" id="netChip" type="button" data-act="net-toggle" title="切换在线 / 离线演示">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+          <path d="M4.4 9.4a12 12 0 0 1 15.2 0"/><path d="M7.4 12.7a7.7 7.7 0 0 1 9.2 0"/>
+          <circle cx="12" cy="16.7" r="1.25" fill="currentColor" stroke="none"/>
+        </svg>
+        <span id="netText">在线 · 模拟服务器</span>
+      </button>
+      <button class="chip" id="auditBtn" type="button" data-act="audit-open" title="查看审计日志">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.2 3.6h8.6L18.6 7.4V19.6a1.4 1.4 0 0 1-1.4 1.4H6.2a1.4 1.4 0 0 1-1.4-1.4V5a1.4 1.4 0 0 1 1.4-1.4z"/>
+          <path d="M14.4 3.6v4h4"/><path d="M8.4 12.4h7M8.4 16h4.6"/>
+        </svg>
+        审计日志 <b class="chip-count" id="auditCount">0</b>
+      </button>
+      <button class="chip user-chip" id="userChip" type="button" data-act="logout" title="退出登录">
+        <span class="user-ava" id="userAva">李</span>
+        <span id="userName">未登录</span>
+        <em class="user-id" id="userId"></em>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= 病历工作区 ================= -->
+  <section class="workspace" id="workspace" aria-label="病历工作区"></section>
+
+  <!-- ================= 三阶段进度 ================= -->
+  <section class="phase" aria-label="救治阶段进度">
+    <div class="phase-head">
+      <div class="phase-title">
+        救治阶段进度
+        <span class="phase-hint">录入后自动计算</span>
+      </div>
+      <div class="phase-total">总体完成度 <b id="phaseTotal">0%</b></div>
+    </div>
+    <div class="phase-track" id="phaseTrack"></div>
+  </section>
+
+  <!-- ================= 当前患者 ================= -->
+  <section id="patientCard"></section>
+
+  <!-- ================= 模块 ================= -->
+  <section class="modules" id="moduleGrid" aria-label="功能模块"></section>
+
+  <!-- ================= 状态流转 ================= -->
+  <section class="flow" aria-label="患者信息状态流转">
+    <div class="flow-head">
+      <h3>患者信息的统一状态流转</h3>
+      <span class="flow-note" id="flowNote">尚未开始</span>
+    </div>
+    <div class="flow-track">
+      <button class="flow-step" type="button" data-go="patient">
+        <span class="fs-dot"></span>
+        <b>院前采集</b>
+        <em>现场 · 转运</em>
+      </button>
+      <span class="flow-arrow"></span>
+      <button class="flow-step" type="button" data-go="receive">
+        <span class="fs-dot"></span>
+        <b>院内接收</b>
+        <em>预通知 · 接诊</em>
+      </button>
+      <span class="flow-arrow"></span>
+      <button class="flow-step" type="button" data-go="referral">
+        <span class="fs-dot"></span>
+        <b>转诊交接</b>
+        <em>摘要 · 确认</em>
+      </button>
+      <span class="flow-arrow"></span>
+      <button class="flow-step" type="button" data-go="followup">
+        <span class="fs-dot"></span>
+        <b>院后随访</b>
+        <em>计划 · 回传</em>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= 安全 ================= -->
+  <section class="safety">
+    <div class="safety-head">
+      <h3>安全与合规</h3>
+      <span class="safety-note">演示环境 · 数据虚构</span>
+    </div>
+    <div class="safety-grid">
+      <div class="sf"><b>权限控制</b><p>院前、院内、随访按角色最小授权，越权访问留痕。</p></div>
+      <div class="sf"><b>患者授权</b><p>信息共享前记录授权范围、授权人与时间。</p></div>
+      <div class="sf"><b>数据加密</b><p>传输 TLS、存储加密，身份证号默认脱敏展示。</p></div>
+      <div class="sf"><b>审计记录</b><p>谁、何时、对哪条数据做了什么，全量可追溯。</p></div>
+    </div>
+    <div class="offline-bar" id="offlineBanner" hidden>
+      <b>当前为离线状态</b>
+      <span>操作先写入本地缓存，网络恢复后自动补传，冲突以服务端时间戳为准。</span>
+      <span class="queue-tag" id="queueTag">待补传 0 条</span>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p><b>说明：</b>本页面为参赛演示原型，患者数据全部虚构，用于展示信息结构与交互流程；未与 120 调度系统、医院 HIS/EMR、区域胸痛中心平台真实对接。3D 内容为示意模型，不用于诊断。</p>
+    <p class="foot-dim">检查结果的可信程度由「来源 + 复核状态」共同决定：绿色仅代表结果已记录并复核，不代表诊断结论。</p>
+  </footer>
+
+</div>
+
+<!-- ================= 抽屉 ================= -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="模块详情">
+  <div class="drawer-head">
+    <div class="drawer-title-wrap">
+      <p class="drawer-eyebrow" id="drawerEyebrow"></p>
+      <h2 id="drawerTitle"></h2>
+    </div>
+    <button class="icon-btn" id="drawerClose" type="button" data-act="close-panel" aria-label="关闭">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot"></div>
+</aside>
+
+<!-- ================= 弹层 ================= -->
+<div class="modal-layer" id="modalLayer" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ================= 打印容器 ================= -->
+<div id="printRoot" aria-hidden="true"></div>
+
+<script src="model3d.js"></script>
+<script src="panels.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
